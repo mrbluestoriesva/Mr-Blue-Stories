@@ -1,0 +1,560 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mr Blue's mysteries</title>
+    <!-- Importiamo il font Merriweather -->
+    <link href="https://fonts.googleapis.com/css2?family=Merriweather:ital,wght@0,300;0,400;0,700;1,300&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-color: #0b0b0d;
+            --card-bg: #161619;
+            --text-color: #e0e0e0;
+            --accent-color: #ffffff;
+            --accent-glow: 0 0 12px rgba(255, 255, 255, 0.4);
+            --font-main: 'Merriweather', serif;
+        }
+
+        .blue-neon {
+            color: #0044ff;
+            text-shadow: 0 0 15px rgba(0, 68, 255, 0.8), 0 0 30px rgba(0, 68, 255, 0.4);
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            font-family: var(--font-main);
+            margin: 0;
+            padding: 0;
+            overflow-x: hidden;
+        }
+
+        header {
+            background-color: #0b0b0d;
+            padding: 25px;
+            text-align: center;
+            position: relative;
+            z-index: 10;
+        }
+
+        h1 {
+            margin: 0;
+            font-size: 34px;
+            font-weight: 700;
+            letter-spacing: 1.5px;
+            color: var(--accent-color);
+            text-shadow: var(--accent-glow);
+        }
+
+        .container {
+            max-width: 1100px;
+            margin: 20px auto;
+            padding: 0 20px;
+            position: relative;
+            z-index: 10;
+        }
+
+        .main-heading {
+            font-family: 'Merriweather', serif;
+            font-size: 30px;
+            color: var(--accent-color);
+            text-shadow: var(--accent-glow);
+            text-align: center;
+            margin-bottom: 15px;
+            font-weight: bold;
+        }
+
+        .carousel-wrapper {
+            position: relative;
+            width: 100%;
+        }
+
+        .hero-banner {
+            position: relative;
+            background-size: cover;
+            background-position: center;
+            height: 480px;
+            border-radius: 16px;
+            cursor: grab;
+            user-select: none;
+            overflow: hidden;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.8);
+        }
+
+        .hero-banner:active {
+            cursor: grabbing;
+        }
+
+        .hero-banner::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: 
+                linear-gradient(to bottom, #0b0b0d 0%, transparent 20%, transparent 80%, #0b0b0d 100%),
+                linear-gradient(to right, #0b0b0d 0%, transparent 15%, transparent 85%, #0b0b0d 100%);
+            pointer-events: none;
+            z-index: 2;
+        }
+
+        .side-arrow {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(11, 11, 13, 0.8);
+            color: #fff;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            z-index: 5;
+            opacity: 0;
+            transition: opacity 0.3s ease, background 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+            font-size: 18px;
+        }
+
+        .carousel-wrapper:hover .side-arrow {
+            opacity: 1;
+        }
+
+        .side-arrow.prev { left: -20px; }
+        .side-arrow.next { right: -20px; }
+
+        .side-arrow:hover {
+            background: rgba(22, 22, 25, 0.95);
+            border-color: #fff;
+            box-shadow: 0 0 15px rgba(255, 255, 255, 0.4);
+        }
+
+        .back-btn {
+            background: linear-gradient(135deg, #161619, #222226);
+            color: #fff;
+            border: 1px solid rgba(255, 255, 255, 0.25);
+            padding: 10px 22px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-family: var(--font-main);
+            font-size: 14px;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+            transition: all 0.3s ease;
+        }
+
+        .back-btn:hover {
+            border-color: #fff;
+            background: linear-gradient(135deg, #222226, #2d2d33);
+            box-shadow: 0 0 15px rgba(255, 255, 255, 0.25);
+            transform: translateY(-2px);
+        }
+
+        .carousel-controls {
+            text-align: center;
+            margin-top: 15px;
+            margin-bottom: 40px;
+        }
+
+        #carousel-indicator {
+            color: #888;
+            font-size: 14px;
+        }
+
+        .intro-description {
+            background-color: var(--card-bg);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            padding: 20px 25px;
+            border-radius: 12px;
+            text-align: center;
+            color: #ccc;
+            font-size: 15px;
+            line-height: 1.6;
+            margin-top: 30px;
+            margin-bottom: 10px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.6);
+        }
+
+        .section-title {
+            font-size: 22px;
+            color: var(--accent-color);
+            border-bottom: 2px solid #222;
+            padding-bottom: 8px;
+            margin-top: 30px;
+            margin-bottom: 20px;
+        }
+
+        .event-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+        }
+
+        .event-card {
+            background-color: var(--card-bg);
+            padding: 20px;
+            border-radius: 8px;
+            border: 1px solid rgba(255, 255, 255, 0.25);
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.9);
+        }
+
+        .footer-section {
+            background-color: rgba(11, 11, 13, 0.95);
+            margin-top: 60px;
+            padding: 40px 20px;
+            border-top: 2px solid #222;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 30px;
+            position: relative;
+            z-index: 10;
+        }
+
+        .footer-box h3 {
+            color: var(--accent-color);
+            margin-bottom: 15px;
+        }
+
+        .footer-box input[type="email"] {
+            width: 100%;
+            padding: 10px;
+            border-radius: 5px;
+            border: 1px solid #333;
+            background-color: #161619;
+            color: #fff;
+            margin-bottom: 10px;
+            box-sizing: border-box;
+            font-family: var(--font-main);
+        }
+
+        .footer-box button {
+            background-color: var(--accent-color);
+            color: #0b0b0d;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: 700;
+            font-family: var(--font-main);
+            box-shadow: var(--accent-glow);
+        }
+
+        .social-links a {
+            color: #e0e0e0;
+            text-decoration: none;
+            display: block;
+            margin-bottom: 8px;
+        }
+
+        #particle-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
+        }
+    </style>
+</head>
+<body>
+
+    <canvas id="particle-canvas"></canvas>
+
+    <header>
+        <h1><span class="blue-neon">Mr Blue</span>'s mysteries</h1>
+    </header>
+
+    <div class="container" id="main-container"></div>
+
+    <footer class="footer-section">
+        <div class="footer-box">
+            <h3>Ricevi Notifiche</h3>
+            <p>Iscriviti per non perdere nessun aggiornamento.</p>
+            <input type="email" placeholder="La tua email...">
+            <button>Iscriviti</button>
+        </div>
+
+        <div class="footer-box">
+            <h3>Seguici sui Social</h3>
+            <div class="social-links">
+                <a href="#" target="_blank">Instagram: @mrbluesmysteries</a>
+                <a href="#" target="_blank">Canale WhatsApp Ufficiale</a>
+            </div>
+        </div>
+
+        <div class="footer-box">
+            <h3>Contatti</h3>
+            <p>Email: mrbluestories.va@gmail.com</p>
+            <p>Scrivici per collaborazioni o informazioni.</p>
+        </div>
+    </footer>
+
+    <script src="eventi.js"></script>
+
+    <script>
+        window.addEventListener('DOMContentLoaded', () => {
+            if (typeof listaEventiJS === 'undefined') return;
+
+            const container = document.querySelector('#main-container');
+
+            const homeHtml = `
+                <div class="main-heading">Evento in Primo Piano</div>
+                <div class="carousel-wrapper">
+                    <button class="side-arrow prev" id="prev-event">❮</button>
+                    <div class="hero-banner" id="hero-carousel-container"></div>
+                    <button class="side-arrow next" id="next-event">❯</button>
+                </div>
+                <div class="carousel-controls" id="carousel-controls-wrapper">
+                    <span id="carousel-indicator">1 / 1</span>
+                </div>
+                
+                <div class="intro-description">
+                    <strong>Mr Blue</strong> è un soggetto misterioso a cui piacciono le sfide: te ne proporrà spesso, toccherà a te decidere se accettarle...
+                </div>
+
+                <div class="section-title">Eventi Passati (Archivio)</div>
+                <div class="event-grid" id="grid-passati"></div>
+            `;
+
+            function renderHome() {
+                container.innerHTML = homeHtml;
+
+                const heroContainer = document.querySelector('#hero-carousel-container');
+                const eventiPassatiContainer = document.querySelector('#grid-passati');
+                const btnPrev = document.querySelector('#prev-event');
+                const btnNext = document.querySelector('#next-event');
+                const indicator = document.querySelector('#carousel-indicator');
+                const controlsWrapper = document.querySelector('#carousel-controls-wrapper');
+
+                if(eventiPassatiContainer) eventiPassatiContainer.innerHTML = '';
+
+                let eventiAttivi = listaEventiJS.filter(e => !e.passato);
+                let currentIndex = 0;
+
+                function renderHeroEvent() {
+                    if (eventiAttivi.length === 0) {
+                        heroContainer.style.backgroundImage = 'none';
+                        if(btnPrev) btnPrev.style.display = 'none';
+                        if(btnNext) btnNext.style.display = 'none';
+                        if(controlsWrapper) controlsWrapper.style.display = 'none';
+                        return;
+                    }
+
+                    if(controlsWrapper) controlsWrapper.style.display = 'block';
+                    
+                    const eventoCorrente = eventiAttivi[currentIndex];
+                    const immagineSpecifica = eventoCorrente.immagine ? eventoCorrente.immagine.trim() : 'locandina1.png';
+                    
+                    heroContainer.style.backgroundImage = `url('${immagineSpecifica}')`;
+
+                    if(indicator) {
+                        indicator.textContent = `${currentIndex + 1} di ${eventiAttivi.length}`;
+                    }
+                }
+
+                heroContainer.onclick = (e) => {
+                    if (e.target.closest('.side-arrow')) return;
+                    if (!isDragging && eventiAttivi.length > 0) {
+                        renderPaginaDettaglio(eventiAttivi[currentIndex]);
+                    }
+                };
+
+                let startX = 0;
+                let isDragging = false;
+
+                heroContainer.addEventListener('pointerdown', (e) => {
+                    isDragging = false;
+                    startX = e.clientX;
+                });
+
+                heroContainer.addEventListener('pointermove', (e) => {
+                    if (Math.abs(e.clientX - startX) > 10) {
+                        isDragging = true;
+                    }
+                });
+
+                heroContainer.addEventListener('pointerup', (e) => {
+                    if (!isDragging) return;
+                    let diffX = e.clientX - startX;
+                    if (diffX > 40) {
+                        currentIndex = (currentIndex - 1 + eventiAttivi.length) % eventiAttivi.length;
+                        renderHeroEvent();
+                    } else if (diffX < -40) {
+                        currentIndex = (currentIndex + 1) % eventiAttivi.length;
+                        renderHeroEvent();
+                    }
+                    setTimeout(() => { isDragging = false; }, 50);
+                });
+
+                if(btnNext) {
+                    btnNext.addEventListener('click', (ev) => {
+                        ev.stopPropagation();
+                        if (eventiAttivi.length > 0) {
+                            currentIndex = (currentIndex + 1) % eventiAttivi.length;
+                            renderHeroEvent();
+                        }
+                    });
+                }
+
+                if(btnPrev) {
+                    btnPrev.addEventListener('click', (ev) => {
+                        ev.stopPropagation();
+                        if (eventiAttivi.length > 0) {
+                            currentIndex = (currentIndex - 1 + eventiAttivi.length) % eventiAttivi.length;
+                            renderHeroEvent();
+                        }
+                    });
+                }
+
+                let passatiTrovati = false;
+                listaEventiJS.forEach(e => {
+                    if (e.passato) {
+                        passatiTrovati = true;
+                        const card = document.createElement('div');
+                        card.className = 'event-card';
+                        card.style.opacity = '0.6';
+                        card.innerHTML = `
+                            <h3 style="color: #fff; margin-top: 0;">${e.titolo}</h3>
+                            <p><strong>Data:</strong> ${e.data}</p>
+                            <p>${e.descrizione}</p>
+                        `;
+                        eventiPassatiContainer.appendChild(card);
+                    }
+                });
+
+                if (!passatiTrovati && eventiPassatiContainer) {
+                    eventiPassatiContainer.innerHTML = '<p style="color: #777; font-style: italic;">Nessun evento passato nell\'archivio.</p>';
+                }
+
+                renderHeroEvent();
+            }
+
+            function renderPaginaDettaglio(e) {
+                const immagineSpecifica = e.immagine ? e.immagine.trim() : 'locandina1.png';
+                const descrizioneFormattata = e.descrizione ? e.descrizione.replace(/\n/g, '<br>') : '';
+                // Legge il link specifico dall'oggetto dell'evento, oppure usa quello di default
+                const linkTally = e.link ? e.link.trim() : 'https://tally.so/r/gDRBe1';
+
+                container.innerHTML = `
+                    <div style="margin-bottom: 20px;">
+                        <button id="btn-indietro-home" class="back-btn">
+                            <span>❮</span> Torna alla Home
+                        </button>
+                    </div>
+                    
+                    <div class="hero-banner" style="
+                        background-image: url('${immagineSpecifica}');
+                        height: auto;
+                        min-height: 520px;
+                        cursor: default;
+                        display: flex;
+                        flex-direction: column;
+                        justify-content: flex-end;
+                        padding: 25px;
+                        box-sizing: border-box;
+                    ">
+                        <div style="
+                            position: relative;
+                            background: rgba(11, 11, 13, 0.92);
+                            padding: 30px;
+                            border-radius: 12px;
+                            border: 1px solid rgba(255,255,255,0.2);
+                            backdrop-filter: blur(8px);
+                            z-index: 3;
+                            width: 100%;
+                            box-sizing: border-box;
+                        ">
+                            <h2 style="color: var(--accent-color); font-size: 26px; margin-top: 0; margin-bottom: 10px; text-shadow: var(--accent-glow);">${e.titolo}</h2>
+                            
+                            <div style="font-size: 15px; color: #ddd; margin-bottom: 12px; padding-bottom: 8px; border-bottom: 1px solid rgba(255,255,255,0.15);">
+                                <strong>Data:</strong> ${e.data} &nbsp;&nbsp;|&nbsp;&nbsp; <strong>Orario:</strong> ${e.orario} &nbsp;&nbsp;|&nbsp;&nbsp; <strong>Luogo:</strong> ${e.luogo}
+                            </div>
+
+                            <p style="color: #ccc; line-height: 1.6; font-size: 15px; margin-bottom: 20px;">${descrizioneFormattata}</p>
+
+                            <!-- Pulsante Iscriviti Qui Dinamico -->
+                            <a href="${linkTally}" target="_blank" style="
+                                background-color: var(--accent-color);
+                                color: #0b0b0d;
+                                padding: 10px 22px;
+                                border-radius: 6px;
+                                text-decoration: none;
+                                font-weight: bold;
+                                font-size: 14px;
+                                display: inline-block;
+                                box-shadow: var(--accent-glow);
+                                transition: transform 0.2s ease;
+                            ">Iscriviti qui</a>
+                        </div>
+                    </div>
+                `;
+
+                document.querySelector('#btn-indietro-home').onclick = () => {
+                    renderHome();
+                };
+
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            }
+
+            const canvas = document.getElementById('particle-canvas');
+            if (canvas) {
+                const ctx = canvas.getContext('2d');
+                function resizeCanvas() {
+                    canvas.width = window.innerWidth;
+                    canvas.height = window.innerHeight;
+                }
+                resizeCanvas();
+                window.addEventListener('resize', resizeCanvas);
+
+                const particleCount = 55;
+                const particles = [];
+
+                for (let i = 0; i < particleCount; i++) {
+                    particles.push({
+                        x: Math.random() * canvas.width,
+                        y: Math.random() * canvas.height,
+                        radius: Math.random() * 3.0 + 1.2,
+                        color: '#3366ff',
+                        vx: (Math.random() - 0.5) * 0.5,
+                        vy: (Math.random() - 0.5) * 0.5,
+                        alpha: Math.random() * 0.5 + 0.5,
+                        alphaChange: (Math.random() * 0.025 + 0.008) * (Math.random() < 0.5 ? 1 : -1)
+                    });
+                }
+
+                function animateParticles() {
+                    ctx.clearRect(0, 0, canvas.width, canvas.height);
+                    particles.forEach(p => {
+                        p.x += p.vx;
+                        p.y += p.vy;
+                        p.alpha += p.alphaChange;
+                        if (p.alpha <= 0.1 || p.alpha >= 0.9) p.alphaChange *= -1;
+                        if (p.x < 0) p.x = canvas.width;
+                        if (p.x > canvas.width) p.x = 0;
+                        if (p.y < 0) p.y = canvas.height;
+                        if (p.y > canvas.height) p.y = 0;
+
+                        ctx.save();
+                        ctx.globalAlpha = p.alpha;
+                        ctx.shadowBlur = 22;
+                        ctx.shadowColor = '#0055ff';
+                        ctx.fillStyle = '#4488ff';
+                        ctx.beginPath();
+                        ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+                        ctx.fill();
+                        ctx.restore();
+                    });
+                    requestAnimationFrame(animateParticles);
+                }
+                animateParticles();
+            }
+
+            renderHome();
+        });
+    </script>
+</body>
+</html>
